@@ -1,52 +1,62 @@
-namespace itertools
-{
+#include "iostream"
 
-
-template <class T>
-
-class range
-{
-
-
-private:
-    T start; // __starting point
-    T _end;   // stopping point.
-
-    class iterator
-    {
+//NameSpace for a Tasks
+namespace itertools {
+    
+    template <typename T1, typename T2> 
+    class zip {
+    
+    private: // private variables and functions
+        T1 iterable_A;
+        T2 iterable_B;
 
     public:
-        T data;
+        zip(T1 start, T2 end) :  iterable_A(start), iterable_B(end) {}
+        
+    auto end() {
+        return iterator<decltype(iterable_A.end()),decltype(iterable_B.end())>(iterable_A.end(), iterable_B.end()); }  // iteratable object  
+ auto begin(){ 
+        return  iterator<decltype(iterable_A.begin()),decltype(iterable_B.begin())>(iterable_A.begin(), iterable_B.begin()); }  // iteratable object
 
-        //constructor
-        iterator(T v) : data(v){}
+    template <typename C1, typename C2>
+        class iterator {
 
-        // operators  
-        T operator*() const
-        {
-            return data;
-        }
+        private: 
+            C2 iter_B; // iterator B
+            C1 iter_A; // iterator A
 
-      
-    iterator &operator++()
-        {
+        public:
+            iterator(C1 itA , C2 itB): iter_A(itA) , iter_B(itB)  {}
 
-            ++data;
-            return *this;
-        }
-        bool operator!=(iterator const &other) const
-        { 
-            return data != (other.data);
-        }
+           
+ bool operator!=(iterator<C1,C2>  it){
+                return (iter_A != it.iter_A) && (iter_B != it.iter_B);
+ 
+            }
 
-    
+            std::pair<decltype(*iter_A),decltype(*iter_B)> operator*() const {
+
+             return  std::pair<decltype(*iter_A),decltype(*iter_B)> (*iter_A , *iter_B);
+            }
+
+           
+            iterator<C1,C2>& operator++() {
+               ++iter_A;
+               ++iter_B;
+               return *this;
+ 
+                            }
+
+
+         
+        }; // END OF CLASS ITERATOR
+
+
     };
+    template <typename T,typename E>
+    std::ostream &operator<<(std::ostream &os, const std::pair<T,E> &c){
+    os << c.first << ',' << c.second;
 
-public:
-    range(T from, T to) : start(from), _end(to) {}                      
-    iterator begin() const { return iterator(start); }  
-    iterator end() const { return iterator(_end); }      
-}; // class
-
-
-} // namespace itertools
+    return os;
+}
+}
