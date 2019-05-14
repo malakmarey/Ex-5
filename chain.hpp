@@ -1,78 +1,68 @@
 #include "iostream"
 
-namespace itertools
-{
-template <typename T1, typename T2>
-class chain
-{
-private:
-    T1 iter_A;
-    T2 iter_B;
-
-public:
-    chain(T1 start, T2 end) : iter_A(start), iter_B(end) {}
-    auto begin()
-    {
-        return iterator<decltype(iter_A.begin()), decltype(iter_B.begin())>(iter_A.begin(), iter_B.begin()); // iteratable object
-    }
-    auto end()
-    {
-        return iterator<decltype(iter_A.end()), decltype(iter_B.end())>(iter_A.end(), iter_B.end()); // iteratable object
-    }
-    template <typename B1, typename B2>
-    class iterator
-    {
-
-    private:
-        B1 iterator_A; // iterator A
-        B2 iterator_B; // iterator B
-        bool checkKind;
+//NameSpace for a Tasks
+namespace itertools {
+    
+    template <typename T1, typename T2> 
+    class chain {
+    
+    private: // private variables and functions
+        T1 itera_A;
+        T2 itera_B;
 
     public:
-        iterator(B1 itA, B2 itB) : iterator_A(itA), iterator_B(itB), checkKind(true) {}
+        chain(T1 start, T2 end) :  itera_A(start), itera_B(end) {}
+        
+    auto begin(){ 
+        return  iterator<decltype(itera_A.begin()),decltype(itera_B.begin())>(itera_A.begin(), itera_B.begin()); }  // iteratable object
 
-        iterator<B1, B2> &operator++()
-        {
-            if (checkKind)
-            {
-                ++iterator_A;
-            }
-            else
-            {
-                ++iterator_B;
-            }
-            return *this;
-        }
+    auto end() {
+        return iterator<decltype(itera_A.end()),decltype(itera_B.end())>(itera_A.end(), itera_B.end()); }  // iteratable object  
+ 
+    template <typename C1, typename C2>
+        class iterator {
 
-        decltype(*iterator_A) operator*() const
-        {
+        private:
+            C1 iterator_A; // iterator A
+            C2 iterator_B; // iterator B
+         bool checkKind;
 
-            if (checkKind)
-            {
-                return *iterator_A;
-            }
-            else
-            {
-                return *iterator_B;
-            }
-        }
+        public:
+            iterator(C1 itA , C2 itB): iterator_A(itA) , iterator_B(itB), checkKind(true)  {}
 
-        bool operator!=(iterator<B1, B2> it)
-        {
-            if (checkKind && !(iterator_A != it.iterator_A))
-            {
-                checkKind = false;
+           iterator<C1,C2>& operator++() {
+                if(checkKind){
+                    ++iterator_A;
+                }else {
+                    ++iterator_B;
+                }
+                return *this;
             }
-            if (checkKind)
-            {
-                return iterator_A != it.iterator_A;
-            }
-            else
-            {
-                return iterator_B != it.iterator_B;
-            }
-        }
 
-    }; // END OF CLASS ITERATOR
-};
-} // namespace itertools
+
+            decltype(*iterator_A) operator*() const {
+
+                if(checkKind){
+                    return *iterator_A;
+                }else {
+                    return *iterator_B;
+                }
+            }
+
+            bool operator!=(iterator<C1,C2>  it){
+                if(checkKind && !(iterator_A != it.iterator_A)){
+                    checkKind = false;
+                }
+                if(checkKind){
+                    return iterator_A != it.iterator_A;
+                }else{
+                    return iterator_A != it.iterator_A;
+                }
+            }
+
+
+         
+        }; // END OF CLASS ITERATOR
+
+    };
+}
