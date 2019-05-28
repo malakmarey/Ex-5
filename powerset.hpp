@@ -1,103 +1,125 @@
-#include "iostream"
-#include <set> // for set operations
-#include <cmath>
 #include <iostream>
+#include <vector>
+#include <cmath>
+
+
 
 namespace itertools {
-        
-    template <class T> 
-    class powerset {
+
     
-    private: 
-        T iterable; // start point
-
-    public:
-    powerset(T start) : iterable(start) {} 
-
-    auto begin() { 
-    return iterator<decltype(iterable.begin())> (iterable.begin(), iterable.end()); 
-    } 
-    auto end()  { 
-    return iterator<decltype(iterable.begin())>(iterable.end(), iterable.end());
-    }    
- 
-    template <class C>
-        class iterator {
-
-        private:
-            C iter_begin; // iterator A
-            C iter_end; // iterator A
-            unsigned   index;
-            unsigned   count_elements;
 
 
-        public:
-            iterator(C itA , C itB): iter_begin(itA), iter_end(itB) , index(0),count_elements(0)  {
+template <typename Iter>
+class powerset {
 
-            C _element_iterator = iter_begin;
-            while (_element_iterator != iter_end)
-            {
-                ++count_elements;
-                ++_element_iterator;
-            }
+private:
+Iter Iter_a;
 
-            count_elements = std::pow(2, count_elements);
-            }
+public:
+powerset(Iter value) : Iter_a(value) {}
 
-           iterator<C>& operator++() {
-               ++index;
-               return *this;
-            }
+auto begin() const {    return iterator<decltype(Iter_a.begin())> (Iter_a.begin(), Iter_a.end());
+}
+auto end() const {       return iterator<decltype(Iter_a.begin())>(Iter_a.end(), Iter_a.end());
+}
 
-            set<decltype(*iter_begin)> operator*() const         {
-            C _element_iterator = iter_begin;
-            std::set<decltype(*iter_begin)> S;
-            unsigned int i = index;
-            while (i != 0 && _element_iterator != iter_end)
-            { 
-                unsigned int r = i % 2;
-                i = i >> 1; 
 
-                if (r == 1)
-                    S.insert(*_element_iterator);
 
-                ++_element_iterator;
-            }
 
-            return S;
+template <typename T>
+class iterator {
+
+
+private:
+
+vector<vector<T>> mix(const vector<T> &other){
+        vector<vector<T>> mix_combin;
+        vector<T> data_temp;
+        mix_combin.push_back(data_temp);
+
+        for (int i = 0; i < other.size(); i++) {
+ vector<vector<T>> Temp_mix = mix_combin;
+
+                for (int j = 0; j < Temp_mix.size(); j++) {  Temp_mix[j].push_back(other[i]); }
+                for (int j = 0; j < Temp_mix.size(); j++) {  mix_combin.push_back(Temp_mix[j]); }
         }
+        return mix_combin;
+}
 
-        bool operator!=(iterator<C> const &it) const {
-            return ((count_elements - index) != (it.count_elements - it.index - 1));
+int length_iter(const T A,const T B){
+        T data = A;
+        int temp = 0;
+        while(data != B) {  temp++;  ++data;    }
+        return pow(2,temp);
+}
 
-            }
- 
-         
-        }; // END OF CLASS ITERATOR
+vector<T> Swap(const T a,const T b){
+        
+        vector<T> temp;
+        T run = a;
+        while(run != b) {
+                temp.push_back(run);
+                ++run; }
+        return temp;
+}
 
 
-    };
-    
-template <typename D>
-std::ostream &operator<<(std::ostream &os, const std::set<D> &S)
+
+public:
+
+vector<vector<T>>   data;
+T iterable_a;
+T iterable_b;
+int size;
+int value_index;
+
+
+
+iterator(T itA, T itB) : iterable_a(itA), iterable_b(itB), size(length_iter(itA,itB)),value_index(0){}
+
+bool operator!= (const iterator & temp){
+        return (value_index != size);
+}
+
+auto operator++() {      ++value_index;     return *this;}
+
+
+auto operator*(){
+        vector<T> A  = Swap(iterable_a,iterable_b);
+        data = mix(A);
+        
+        vector<typename remove_const<typename remove_reference<decltype(*iterable_b)>::type>::type> temp; 
+       
+        for(auto i : data[value_index]) { temp.push_back(*i);  }
+        return temp;
+}
+
+
+
+
+};
+
+
+
+};
+
+
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const std::vector<T> &Value)
 {
-    os << "{";
+        os << "{";
 
-    auto it = S.begin();
-    if(it != S.end())
-    { // first element is without comma seperator.
-        os << *it; 
-        ++it;
-    }
+        auto temp = Value.begin();
+        if(temp != Value.end())  {
+                os << *temp;
+                ++temp; }
+        while (temp != Value.end()) {
+                os << ',' << *temp;
+                ++temp;}
 
-    while (it != S.end())
-    {
-        os << ',' << *it;
-        ++it;
-    }
-
-    os << "}";
-
-    return os;
+        os << "}";
+        return os;
 }
-}
+
+};
