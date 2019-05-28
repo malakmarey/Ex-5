@@ -1,52 +1,67 @@
+#pragma once
+
+#include <iterator>
+#include<iostream>
+
 namespace itertools
 {
-
-
 template <class T>
-
 class range
 {
 
-
-private:
-    T start; // __starting point
+    T _start; // __starting point
     T _end;   // stopping point.
-
+   
     class iterator
     {
 
     public:
-        T data;
+        T value;
 
         //constructor
-        iterator(T v) : data(v){}
+        iterator(T v) : value(v){}
 
-        // operators  
-        T operator*() const
-        {
-            return data;
+        // operators
+        bool operator!=(range::iterator const &other) const
+        { 
+            return value != (other.value);
         }
 
-      
-    iterator &operator++()
+    bool operator== (range::iterator const &other) const
+    {
+       return value == other.value;
+
+     }
+        const T operator*() const
+        {
+            return value;
+        }
+
+        iterator &operator++()
         {
 
-            ++data;
+            ++value;
             return *this;
         }
-        bool operator!=(iterator const &other) const
-        { 
-            return data != (other.data);
-        }
 
-    
     };
 
 public:
-    range(T from, T to) : start(from), _end(to) {}                      
-    iterator begin() const { return iterator(start); }  
-    iterator end() const { return iterator(_end); }      
+
+    range(T from, T to) : _start(from), _end(to) {}  
+
+
+
+
+		iterator begin() const {
+			return iterator(_start);
+		}
+
+		iterator end() const {
+			return iterator(_end);
+		} 
 }; // class
+
 
 
 } // namespace itertools
